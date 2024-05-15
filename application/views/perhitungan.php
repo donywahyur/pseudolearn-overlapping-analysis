@@ -71,7 +71,9 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <button class='btn btn-info col-md-12' id="btn-lihat-hitung">Lihat Perhitungan</button>
+                        <div class="box-header with-border">
+                            <button class='btn btn-info col-md-12' id="btn-lihat-hitung">Lihat Perhitungan</button>
+                        </div>
                     </div>
 
                     <div class="col-md-6 perhitunganCluster" hidden>
@@ -192,6 +194,49 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="box-header with-border">
+                            <button class='btn btn-info col-md-12' id="btn-lihat-nilai">Lihat Test Nilai</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 nilai" hidden>
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Data Nilai</h3>
+
+                            <table class="table table-striped table-bordered table-hover datatables">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">No.</th>
+                                        <th style="text-align: center;">NIM</th>
+                                        <th style="text-align: center;">Nama</th>
+                                        <th style="text-align: center;">Jumlah Langkah</th>
+                                        <th style="text-align: center;">Jumlah Waktu</th>
+                                        <th style="text-align: center;">Post Test</th>
+                                        <th style="text-align: center;">Pre Test</th>
+                                        <th style="text-align: center;">Cluster</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if ($dataConditions) : ?>
+                                        <?php foreach ($dataConditions as $key => $value) : ?>
+                                            <tr>
+                                                <td style="text-align: center;"><?= $key + 1; ?></td>
+                                                <td style="text-align: center;"><?= $value['nim']; ?></td>
+                                                <td style="text-align: center;"><?= $value['nama']; ?></td>
+                                                <td style="text-align: center;"><?= $value['jumlah_langkah']; ?></td>
+                                                <td style="text-align: center;"><?= $value['jumlah_waktu']; ?></td>
+                                                <td style="text-align: center;"><?= $value['post_test'] ?></td>
+                                                <td style="text-align: center;"><?= $value['pre_test'] ?></td>
+                                                <td style="text-align: center;"><?= $perhitungan['arrCluster'][$value['id_user']]; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,6 +249,9 @@
     $("#btn-lihat-hitung").click(function() {
         $(".perhitunganCluster").toggle();
     });
+    $("#btn-lihat-nilai").click(function() {
+        $(".nilai").toggle();
+    });
 </script>
 <script>
     <?php
@@ -211,7 +259,8 @@
     $xValues = "";
     $yValues = "";
     foreach ($groupCluster as $key => $value) {
-        $xValues .= "'Cluster $key',";
+        $persentase = ($value / count($perhitungan['arrCluster'])) * 100;
+        $xValues .= "'Cluster $key ( $persentase% )',";
         $yValues .= $value . ",";
     }
     $xValues = rtrim($xValues, ",");
@@ -228,7 +277,7 @@
             labels: xValues,
             datasets: [{
                 backgroundColor: barColors,
-                data: yValues
+                data: yValues,
             }]
         },
         options: {

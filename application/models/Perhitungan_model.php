@@ -12,11 +12,11 @@ class Perhitungan_model extends CI_Model
 		// 	GROUP by id_soal,id_user
 		// 	LIMIT 15;
 		// ");
-		$conditions = $this->db->query("
-		SELECT c.id,c.id_user, count(c.id_user) as jumlah_langkah,m.nim,m.nama
+		$conditions = $this->db->query("SELECT c.id,c.id_user, count(c.id_user) as jumlah_langkah,m.nim,m.nama,t.post_test,t.pre_test
 		FROM `conditions` c
 		JOIN users u ON u.id = c.id_user
 		JOIN mahasiswa m ON u.username = m.nim
+		LEFT JOIN test_nilai t ON t.id_user = c.id_user
 		GROUP by c.id_user
 		");
 		$conditions = $conditions->result_array();
@@ -205,5 +205,15 @@ class Perhitungan_model extends CI_Model
 		$result = round(sqrt($sum_of_squares), 7); // Pembulatan 7 digit
 
 		return $result;
+	}
+	function updateTestNilai($nilai)
+	{
+		$data = $this->db->get_where('test_nilai', ['id_user' => $nilai['id_user']])->row_array();
+		if ($data) {
+			$this->db->where('id_user', $nilai['id_user']);
+			$this->db->update('test_nilai', $nilai);
+		} else {
+			$this->db->insert('test_nilai', $nilai);
+		}
 	}
 }
