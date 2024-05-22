@@ -20,7 +20,7 @@ class Nilai extends CI_Controller
 			'user' => $this->user,
 			'judul'	=> 'Clustering',
 			'subjudul' => 'Nilai Mahasiswa',
-			'dataCondition' => $this->perhitungan->getDataCondition(),
+			'dataCondition' => $this->perhitungan->getDataCondition(999),
 		];
 
 		$this->load->view('_templates/dashboard/_header.php', $data);

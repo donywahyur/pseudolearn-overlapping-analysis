@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Perhitungan_model extends CI_Model
 {
 
-	public function getDataCondition()
+	public function getDataCondition($kelas)
 	{
 		// $conditions =$this->db->query("
 		// 	SELECT id_user,id_soal, count(*) as jumlah_langkah 
@@ -12,11 +12,14 @@ class Perhitungan_model extends CI_Model
 		// 	GROUP by id_soal,id_user
 		// 	LIMIT 15;
 		// ");
-		$conditions = $this->db->query("SELECT c.id,c.id_user, count(c.id_user) as jumlah_langkah,m.nim,m.nama,t.post_test,t.pre_test
+		$w_kelas = $kelas == 999 ? "" : "WHERE m.id_kelas = '$kelas'";
+		$conditions = $this->db->query("SELECT c.id,c.id_user, count(c.id_user) as jumlah_langkah,m.nim,m.nama,t.post_test,t.pre_test,k.nama as nama_kelas
 		FROM `conditions` c
 		JOIN users u ON u.id = c.id_user
 		JOIN mahasiswa m ON u.username = m.nim
 		LEFT JOIN test_nilai t ON t.id_user = c.id_user
+		LEFT JOIN tb_kelas k ON m.id_kelas = k.id_kelas
+		$w_kelas
 		GROUP by c.id_user
 		");
 		$conditions = $conditions->result_array();
@@ -215,5 +218,9 @@ class Perhitungan_model extends CI_Model
 		} else {
 			$this->db->insert('test_nilai', $nilai);
 		}
+	}
+	function getKelas()
+	{
+		return $this->db->get('tb_kelas')->result();
 	}
 }

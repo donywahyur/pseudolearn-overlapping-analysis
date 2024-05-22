@@ -3178,6 +3178,8 @@
 
         $(document).ready(function() {
             $('#btn_incorrects').on('click', function() {
+                $("#fail-alert").hide();
+                return false;
                 var id_user = $('#id_user').val();
                 var id_soal = $('#id_soal').val();
                 var condition = $('#incorrects').val();
@@ -3835,7 +3837,6 @@
 
 <!-- start waktu pengerjaan -->
 <script type="text/javascript">
-
     var minutesLabel = document.getElementById("minutes");
     // var secondsLabel = document.getElementById("seconds");
     // var totalSeconds = 0;
@@ -6612,14 +6613,16 @@
         new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'childList') {
-                    if(seconds <= 0)
-                    {
+                    if (seconds <= 0) {
                         setInterval(upTimer, 1000);
                     }
                     console.log(seconds);
                 }
             });
-        }).observe(dropZone, { childList: true, subtree: true });
+        }).observe(dropZone, {
+            childList: true,
+            subtree: true
+        });
     });
 </script>
 <script src="<?= base_url() ?>assets/dist/js/app/ujian/sheet.js"></script>

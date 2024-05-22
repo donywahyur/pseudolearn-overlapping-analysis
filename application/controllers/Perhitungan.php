@@ -48,15 +48,19 @@ class Perhitungan extends CI_Controller
 		];
 		$hitung = [];
 		$clustering = $this->input->get('clustering');
+		$kelas = $this->input->get('kelas');
 		$hitung['clustering'] = $clustering;
-		$hitung['dataConditions'] = $this->perhitungan->getDataCondition();
+		$hitung['dataConditions'] = $this->perhitungan->getDataCondition($kelas);
+		$hitung['dataKelas'] = $this->perhitungan->getKelas();
 		if ($clustering != null) {
-			$normalisasi = $this->normalisasiData($hitung['dataConditions']);
-			$perhitungan = $this->perhitunganMedoid($hitung['dataConditions'], $normalisasi, $clustering);
-			$hitung['jumlahLangkah'] = array_column($hitung['dataConditions'], 'jumlah_langkah', 'id_user');
-			$hitung['jumlahWaktu'] = array_column($hitung['dataConditions'], 'jumlah_waktu', 'id_user');
-			$hitung['perhitungan'] = $perhitungan;
-			$hitung['mahasiswaCluster'] = $this->groupingMahasiswaCluster($hitung['dataConditions'], $perhitungan['arrCluster']);
+			if ($hitung['dataConditions']) {
+				$normalisasi = $this->normalisasiData($hitung['dataConditions']);
+				$perhitungan = $this->perhitunganMedoid($hitung['dataConditions'], $normalisasi, $clustering);
+				$hitung['jumlahLangkah'] = array_column($hitung['dataConditions'], 'jumlah_langkah', 'id_user');
+				$hitung['jumlahWaktu'] = array_column($hitung['dataConditions'], 'jumlah_waktu', 'id_user');
+				$hitung['perhitungan'] = $perhitungan;
+				$hitung['mahasiswaCluster'] = $this->groupingMahasiswaCluster($hitung['dataConditions'], $perhitungan['arrCluster']);
+			}
 			$this->load->view('_templates/dashboard/_header.php', $data);
 			$this->load->view('perhitungan', $hitung);
 			$this->load->view('_templates/dashboard/_footer.php');
