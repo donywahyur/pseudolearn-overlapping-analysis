@@ -49,9 +49,11 @@ class Perhitungan extends CI_Controller
 		$hitung = [];
 		$clustering = $this->input->get('clustering');
 		$kelas = $this->input->get('kelas');
+		$level = $this->input->get('level');
 		$hitung['clustering'] = $clustering;
-		$hitung['dataConditions'] = $this->perhitungan->getDataCondition($kelas);
+		$hitung['dataConditions'] = $this->perhitungan->getDataCondition($kelas, $level);
 		$hitung['dataKelas'] = $this->perhitungan->getKelas();
+		$hitung['dataLevel'] = $this->perhitungan->getLevel();
 		if ($clustering != null) {
 			if ($hitung['dataConditions']) {
 				$normalisasi = $this->normalisasiData($hitung['dataConditions']);
@@ -73,7 +75,7 @@ class Perhitungan extends CI_Controller
 
 	function normalisasiData($dataCondition)
 	{
-
+		error_reporting(0);
 		$arrJumlahLangkah = array_column($dataCondition, 'jumlah_langkah');
 		$arrJumlahWaktu = array_column($dataCondition, 'jumlah_waktu');
 		$minJumlahLangkah = min($arrJumlahLangkah);

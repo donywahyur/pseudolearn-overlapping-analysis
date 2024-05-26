@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Perhitungan_model extends CI_Model
 {
 
-	public function getDataCondition($kelas)
+	public function getDataCondition($kelas = 999, $level = 999)
 	{
 		// $conditions =$this->db->query("
 		// 	SELECT id_user,id_soal, count(*) as jumlah_langkah 
@@ -12,23 +12,32 @@ class Perhitungan_model extends CI_Model
 		// 	GROUP by id_soal,id_user
 		// 	LIMIT 15;
 		// ");
-		$w_kelas = $kelas == 999 ? "" : "WHERE m.id_kelas = '$kelas'";
-		$conditions = $this->db->query("SELECT c.id,c.id_user, count(c.id_user) as jumlah_langkah,m.nim,m.nama,t.post_test,t.pre_test,k.nama as nama_kelas
-		FROM `conditions` c
-		JOIN users u ON u.id = c.id_user
-		JOIN mahasiswa m ON u.username = m.nim
-		LEFT JOIN test_nilai t ON t.id_user = c.id_user
-		LEFT JOIN tb_kelas k ON m.id_kelas = k.id_kelas
-		$w_kelas
-		GROUP by c.id_user
-		");
-		$conditions = $conditions->result_array();
+
+		$this->db->select('c.id, c.id_user, COUNT(c.id_user) as jumlah_langkah,SEC_TO_TIME(SUM(TIME_TO_SEC(c.waktu))) as total_waktu, m.nim, m.nama, t.post_test, t.pre_test, k.nama as nama_kelas');
+		$this->db->from('conditions c');
+		$this->db->join('users u', 'u.id = c.id_user');
+		$this->db->join('mahasiswa m', 'u.username = m.nim');
+		$this->db->join('test_nilai t', 't.id_user = c.id_user', 'left');
+		$this->db->join('tb_kelas k', 'm.id_kelas = k.id_kelas', 'left');
+		$this->db->join('tb_soal s', 's.id_soal = c.id_soal');
+		if ($kelas != 999) {
+			$this->db->where('m.id_kelas', $kelas);
+		}
+
+		if ($level != 999) {
+			$this->db->where('s.id_level', $level);
+		}
+		$this->db->group_by('c.id_user');
+
+		$query = $this->db->get();
+		$conditions = $query->result_array();
 		foreach ($conditions as $key => $value) {
-			$times = $this->getTime2($value['id_user']);
-			$totalTime = 0;
-			foreach ($times as $tKey => $time) {
-				$totalTime += $this->timeToSeconds($time['waktu']);
-			}
+			// $times = $this->getTime2($value['id_user']);
+			// $totalTime = 0;
+			// foreach ($times as $tKey => $time) {
+			// $totalTime += $this->timeToSeconds($time['waktu']);
+			// }
+			$totalTime = $this->timeToSeconds($value['total_waktu']);
 			$conditions[$key]['jumlah_waktu'] = $totalTime;
 
 			//test random 
@@ -222,5 +231,9 @@ class Perhitungan_model extends CI_Model
 	function getKelas()
 	{
 		return $this->db->get('tb_kelas')->result();
+	}
+	function getLevel()
+	{
+		return $this->db->get('tb_level')->result();
 	}
 }

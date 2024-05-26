@@ -25,6 +25,20 @@
                             ?>
                         </select>
                     </div>
+                    <div class="form-group col-sm-12" align="center">
+                        <label for="level" class="control-label">Level</label>
+                        <select name="level" class="form-control" id="">
+                            <option value="999">Semua Level</option>
+                            <?php
+                            if ($dataLevel) {
+                                foreach ($dataLevel as $dlLevel) {
+                                    $selected = $dlLevel->id_level == $this->input->get('level') ? 'selected' : '';
+                                    echo "<option value='" . $dlLevel->id_level . "' $selected>" . $dlLevel->nama . "</option>";
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
                     <div class="form-group" align="center">
                         <button type="submit" id="submit" class="btn btn-flat bg-purple"><i class="fa fa-calculator"></i> Hitung</button>
                     </div>
@@ -84,7 +98,7 @@
                                                             <?= $value['nama_kelas'] ?>
                                                         </td>
                                                         <td style="text-align: center;"><?= $value['jumlah_langkah'] ?></td>
-                                                        <td style="text-align: center;"><?= $value['jumlah_waktu'] ?></td>
+                                                        <td style="text-align: center;"><?= $value['jumlah_waktu']  ?></td>
                                                         <td style="text-align: center;"><?= $value['post_test'] ?></td>
                                                         <td style="text-align: center;"><?= $value['pre_test'] ?></td>
                                                         <td style="text-align: center;">

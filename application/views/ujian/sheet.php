@@ -3178,8 +3178,8 @@
 
         $(document).ready(function() {
             $('#btn_incorrects').on('click', function() {
-                $("#fail-alert").hide();
-                return false;
+                // $("#fail-alert").hide();
+                // return false;
                 var id_user = $('#id_user').val();
                 var id_soal = $('#id_soal').val();
                 var condition = $('#incorrects').val();
