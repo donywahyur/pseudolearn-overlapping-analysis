@@ -3413,8 +3413,8 @@
         $('#fail-alert').css('opacity', '0');
     }
 
-    function submit_nilai(id, level) {
-        $.getJSON(base_url + 'ujian/simpan_hasil/' + id, function(data) {
+    function submit_nilai(id, level, status) {
+        $.getJSON(base_url + 'ujian/simpan_hasil/' + id + '/' + status, function(data) {
             window.localStorage.clear();
             window.location.href = '<?php echo site_url("ujian/list_ujian"); ?>/' + level
         });

@@ -94,7 +94,7 @@ class HasilUjian extends CI_Controller
 			'detail' => $detail_data,
 			'judul'	=> 'Log',
 			'subjudul' => 'Detail Log Per Soal',
-			'total_waktu' => $this->db->query('select SEC_TO_TIME(SUM(TIME_TO_SEC(waktu))) as total_waktu from conditions c INNER JOIN tb_soal s ON c.id_soal = s.id_soal where c.status_jawaban="benar" and c.id_user = ? and s.id_level = ?', [$id, $id_level])->row_array()['total_waktu'],
+			'total_waktu' => $this->db->query('select SEC_TO_TIME(SUM(TIME_TO_SEC(waktu))) as total_waktu from conditions c INNER JOIN tb_soal s ON c.id_soal = s.id_soal where c.id_user = ? and s.id_level = ?', [$id, $id_level])->row_array()['total_waktu'],
 			'nama_mahasiswa' => $this->db->query("SELECT CONCAT(first_name, ' ', last_name) AS nama_mahasiswa FROM users WHERE id = ?", $id)->row_array()['nama_mahasiswa'],
 			'nim_mahasiswa' => $this->db->query("SELECT username AS nim_mahasiswa FROM users WHERE id = ?", $id)->row_array()['nim_mahasiswa'],
 			'kelas_mahasiswa' => $this->db->query("SELECT u.id, k.nama AS kelas_mahasiswa FROM users u INNER JOIN tb_kelas k ON u.id_kelas = k.id_kelas WHERE id = ?", $id)->row_array()['kelas_mahasiswa'],

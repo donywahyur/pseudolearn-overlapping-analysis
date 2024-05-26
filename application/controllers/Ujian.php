@@ -669,7 +669,7 @@ class Ujian extends CI_Controller
 					<div id="success-alert" class="alert" style="display: none; ">
 						<h4>Jawaban Anda benar, silahkan lanjut ke studi kasus berikutnya!</h4>
 						<img src="' . base_url() . 'template/images/success.png" alt="success" />
-						<button type="button" id="btn_corrects" onclick="return submit_nilai(' . $s->id_soal . ',' . $s->id_level . ');" class="btn btn-m btn-info"><b>Close</b></button>
+						<button type="button" id="btn_corrects" onclick="return submit_nilai(' . $s->id_soal . ',' . $s->id_level . ',1);" class="btn btn-m btn-info"><b>Close</b></button>
 					</div>
 					<div id="fail-alert" class="alert" style="display: none;height:550px; width: 700px">
 					<span>
@@ -682,7 +682,7 @@ class Ujian extends CI_Controller
 						</span>
 						<img src="' . base_url() . 'template/images/fail.jpeg" style="width:120px;" alt="fail" /></br><br>
 						
-						<button type="button" id="btn_incorrects" class="btn btn-m btn-info"><b>Close<b></button>
+						<button type="button" id="btn_incorrects" onclick="return submit_nilai(' . $s->id_soal . ',' . $s->id_level . ',0);" class="btn btn-m btn-info"><b>Close<b></button>
 					</div>
 					</main>';
 		}
@@ -723,7 +723,7 @@ class Ujian extends CI_Controller
 		$this->load->view('_templates/topnav/_footer.php');
 	}
 
-	public function simpan_hasil($id)
+	public function simpan_hasil($id, $status)
 	{
 		$this->session->sess_expiration = 0; // expires in 4 hours
 		// Decrypt Id
@@ -732,10 +732,13 @@ class Ujian extends CI_Controller
 		$data['id_user'] = $id_user;
 		$data['id_soal'] = $id;
 		$data['id_level'] = $soal['id_level'];
-		$data['nilai'] = $soal['bobot'];
-		$cek = $this->db->query('select * from nilai where id_user = ? and id_soal = ?', [$id_user, $id])->num_rows();
-		if ($cek == 0) {
+		$data['nilai'] = $status == 0 ? 0 : $soal['bobot'];
+		$cek = $this->db->query('select * from nilai where id_user = ? and id_soal = ?', [$id_user, $id]);
+		if ($cek->num_rows() == 0) {
 			$this->db->insert('nilai', $data);
+		} else {
+			$id = $cek->row()->id;
+			$this->db->update('nilai', $data, ['id' => $id]);
 		}
 		$this->output_json(['status' => true]);
 	}
